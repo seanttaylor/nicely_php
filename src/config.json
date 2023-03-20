@@ -1,0 +1,5 @@
+{
+    "comments": "Non-secret application configuration",
+    "DATABASE_INITIALIZED": true,
+    "DATABASE_FILE_PATH": "\/database.db"
+}
