@@ -13,28 +13,29 @@ class Post {
     private $created_date;
     private $has_image = FALSE;
     private $image_url;
-    private $comment_count = 0;
+    private $comment_count;
     private $like_count = 0;
     
     /**
      * @param String $id - the uuid of the Post
-     * @param String $display_name - the display name of the User creating the post
      * @param String $user_id - the uuid of the User creating the post
+     * @param String $body - text of the post
+     * @param String $display_name - the display name of the User creating the post
      * @param String $user_handle - the handle of the User creating the post
      * @param String|NULL $image_url - a url for any image associated with the post
-     * @param String $body - text of the post
      */
-    function __construct($id, $user_id, $body, $display_name, $user_handle, $image_url) {
+    function __construct($id, $user_id, $body, $display_name, $user_handle, $comment_count=0, $image_url=NULL) {
       $this->id = $id;
       $this->display_name = $display_name;
       $this->user_id = $user_id;
       $this->user_handle = $user_handle;
       $this->body = $body;
+      $this->comment_count = $comment_count;
+      $this->image_url = $image_url;
       // See https://php.watch/versions/8.0/date-utc-p-format
       $this->created_date = date('Y-m-d\TH:i:s');
 
       if ($image_url) {
-        $this->image_url = $image_url;
         $this->has_image = TRUE;
       }  
     }
@@ -87,14 +88,6 @@ class Post {
         $this->body = $updated_text;
     }
     
-    /**
-     * Removes a comment on the current post
-     * @param String $comment_id - the uuid of the comment to remove
-     */
-    function remove_comment($comment_id) {
-        //$this->comments[$comment_id] = null;
-        $this->comment_count--;
-    }
     
     /**
      * Increases the like_count on the current post
@@ -109,6 +102,22 @@ class Post {
     function decrement_like_count() {
         $this->like_count--;
     }
+
+    /**
+     * Increases the comment count on the current post
+     */
+    function increment_comment_count() {
+        $this->comment_count+=1;
+    }
+    
+    /**
+     * Decreases the comment count on the current post
+     */
+    function decrement_comment_count() {
+        $this->comment_count--;
+    }
+
+
     
     /**
      * Fetches alll the comments associated with the current Post
@@ -167,7 +176,7 @@ class Post_Service {
     function get_post_by_id($id) {
         $post_data = $this->repository->get_post_by_id($id);
         extract($post_data);
-        return new Post($id, $user_id, $body, $display_name, $user_handle, $image_url);
+        return new Post($id, $user_id, $body, $display_name, $user_handle, $comment_count, $image_url);
     }
     
     /**
@@ -181,14 +190,14 @@ class Post_Service {
 
     /**
      * Adds a comment to specified Post
-     * @param Post $current_post_id - the uuid of the Post
+     * @param Post $current_post - the Post
      * @param String $commenting_user_id - the uuid of the author of the comment
      * @param String $comment_body - the text of the comment
      */
-    function add_comment($current_post_id, $commenting_user_id, $comment_body) {
+    function add_comment($current_post, $commenting_user_id, $comment_body) {
         $comment_id = uuid();
-        $comment = new Comment($comment_id, $current_post_id, $commenting_user_id, $comment_body);
-        $this->repository->add_comment($comment);
+        $comment = new Comment($comment_id, $current_post->id, $commenting_user_id, $comment_body);
+        $this->repository->add_comment($comment->to_array());
     }
     
 }

@@ -61,9 +61,11 @@ class Add_Comment extends Strategy {
     function process_form_data($form_data) {
         $comment_body = $form_data["comment-body"];
         $commenting_user = $this->user_service->get_user_by_id($form_data["commenter-id"]);
-        $current_post = $this->post_service->get_post_by_id($form_data["post_id"]);
-        $updated_post = $this->post_service->add_comment($current_post, $commenting_user["id"], $comment_body);
-                        
+        $current_post = $this->post_service->get_post_by_id($form_data["post-id"]);
+        
+        $this->post_service->add_comment($current_post, $commenting_user["id"], $comment_body);
+        $updated_post = $this->post_service->get_post_by_id($form_data["post-id"]);
+        
         return Add_Comment_Template::render($updated_post->to_array());
     } 
 }

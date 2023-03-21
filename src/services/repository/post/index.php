@@ -49,20 +49,19 @@ class Post_Repository {
 
      /**
      * Adds a comment to a specified Post
-     * @param String $id - uuid for a Post
+     * @param Array $comment - a Comment on a Post
      * 
      */
-    function add_comment($id) {
-        $add_comment_sql = "INSERT into comments () VALUES()";
+    function add_comment($comment) {
+        extract($comment);
+
+        $add_comment_sql = "INSERT into comments (id, post_id, user_id, body, created_date, like_count) VALUES ('$id', '$post_id', '$user_id', '$body', '$created_date', '$like_count');";
+
+        $increment_comment_sql = "UPDATE posts SET comment_count = comment_count + 1 WHERE id = '$post_id';";
 
         try {
-            $query_result = $this->client->exec($add_comment_sql);
-
-            while ($row = $query_result->fetchArray(SQLITE3_ASSOC)) {
-                $posts[] = $row;
-            }
-            return $posts[0];
-
+            $this->client->query($add_comment_sql);
+            $this->client->query($increment_comment_sql);
         } catch(Exception $e) {
             echo "There was an error getting posts";
         }
