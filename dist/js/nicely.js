@@ -9,6 +9,7 @@ const userIdHiddenInput = $("#user-id");
 const userPostList = $("#user-post-list");
 
 createPostBtn.addEventListener("click", onClickCreatePostButton);
+userPostList.addEventListener("click", onClickLikeButton);
 userPostList.addEventListener("keyup", onAddComment);
 
 /**
@@ -54,4 +55,29 @@ async function onAddComment(e) {
         
         jQuery(commentStatsSelector).replaceWith(commentStatsHTML);
     }
+}
+
+/**
+ * Event handler for liking a  post
+ * @param {Object} e - the HTML Event object 
+ */
+async function onClickLikeButton(e) {
+    if (e.target.classList.contains("like", "icon")) {
+        const likeStatsSelector = `[data-post-stats="${e.target.dataset.postId}"] span[data-like-count]`;
+        const formData = new FormData();
+        formData.append("post-id", `${e.target.dataset.postId}`);
+        formData.append("rel", "like-post");
+        formData.append("user-id", `${userIdHiddenInput.value}`);
+
+        const response = await fetch("./src/client/post.php", {
+            method: "POST",
+            body: formData
+        });
+
+        const likeStatsHTML = await response.text();
+        jQuery(likeStatsSelector).replaceWith(likeStatsHTML);
+
+        console.log(e.target);
+    }
+    
 }

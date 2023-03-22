@@ -38,7 +38,7 @@
 
             <div class='content' data-post-stats=$id>
                 <span class='right floated'>
-                <i class='heart outline like icon'></i>
+                <i data-post-id='$id' class='heart outline like icon'></i>
                 <span data-like-count='$like_count'>$like_count</span> likes
                 </span>
                 <i class='comment icon'></i>

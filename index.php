@@ -74,6 +74,7 @@ $post_service = new Post_Service($post_repository);
 	<div id="user-post-list" class="column">
 		<?php 
 			$post_list = array_reverse($post_service->get_all_posts());
+			// $comment_list = array_reverse($post_service->get_comments_by_user($user);
 
 			foreach($post_list as $post) {
 				list(
@@ -111,8 +112,10 @@ $post_service = new Post_Service($post_repository);
 
 				<div class='content' data-post-stats='$id'>
 					<span class='right floated'>
-					<i class='heart outline like icon'></i>
-					<span data-like-count>$like_count</span> likes
+						<i data-post-id='$id' class='heart outline like icon'></i>
+						<span data-like-count>
+							$like_count likes 
+						</span> 
 					</span>
 					<i class='comment icon'></i>
 					<span data-comment-count>$comment_count comments</span>

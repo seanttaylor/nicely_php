@@ -70,4 +70,30 @@ class Add_Comment extends Strategy {
     } 
 }
 
+/**
+ * A strategy available to the Post_Client for processing incoming 
+ * form data; adds a new like to a specified Post returning an HTML snippet to render in the DOM
+ */
+class Update_Like extends Strategy {
+
+    /**
+     * Processes incoming form data from the application
+     * @param Object $form_data - form data from the client application
+     * @return String a JSON formatted string
+     */
+    function process_form_data($form_data) {
+        if ($form_data["rel"] === "like-post") {
+            $user = $this->user_service->get_user_by_id($form_data["user-id"]);
+            $current_post = $this->post_service->get_post_by_id($form_data["post-id"]);
+        
+            $this->post_service->increment_like_count($current_post, $user);
+            $updated_post = $this->post_service->get_post_by_id($form_data["post-id"]);
+            $current_post_liked_by_user = TRUE;
+
+            return Update_Like_Template::render($updated_post->to_array(), $current_post_liked_by_user);
+        }
+               
+    } 
+}
+
 ?>

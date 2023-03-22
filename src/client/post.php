@@ -31,7 +31,8 @@ $rel = $_POST["rel"];
 
 $strategies = array(
     "create-post" => new Create_Post($post_service, $user_service),
-    "add-comment" => new Add_Comment($post_service, $user_service)
+    "add-comment" => new Add_Comment($post_service, $user_service),
+    "like-post" => new Update_Like($post_service, $user_service)
 );
 
 class Post_Client {
