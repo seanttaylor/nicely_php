@@ -37,6 +37,10 @@ $post_service = new Post_Service($post_repository);
       display: block;
       margin: 0px 0px 15px 0px;
     }
+
+	i.icon[data-current-user-liked] {
+		color: red !important;
+	}
   </style>
 </head>
 
@@ -111,7 +115,7 @@ $post_service = new Post_Service($post_repository);
 				</div>
 
 				<div class='content' data-post-stats='$id'>
-					<span class='right floated'>
+					<span class='right floated like-container'>
 						<i data-post-id='$id' class='heart outline like icon'></i>
 						<span data-like-count>
 							$like_count likes 

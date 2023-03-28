@@ -14,7 +14,7 @@ class Post {
     private $has_image = FALSE;
     private $image_url;
     private $comment_count;
-    private $like_count = 0;
+    private $like_count;
     
     /**
      * @param String $id - the uuid of the Post
@@ -22,15 +22,18 @@ class Post {
      * @param String $body - text of the post
      * @param String $display_name - the display name of the User creating the post
      * @param String $user_handle - the handle of the User creating the post
+     * @param Number $like_count - the number of likes a Post has
+     * @param Number $comment_count - the number of comments a Post has
      * @param String|NULL $image_url - a url for any image associated with the post
      */
-    function __construct($id, $user_id, $body, $display_name, $user_handle, $comment_count=0, $image_url=NULL) {
+    function __construct($id, $user_id, $body, $display_name, $user_handle, $comment_count=0, $like_count=0, $image_url=NULL) {
       $this->id = $id;
       $this->display_name = $display_name;
       $this->user_id = $user_id;
       $this->user_handle = $user_handle;
       $this->body = $body;
       $this->comment_count = $comment_count;
+      $this->like_count = $like_count;
       $this->image_url = $image_url;
       // See https://php.watch/versions/8.0/date-utc-p-format
       $this->created_date = date('Y-m-d\TH:i:s');
@@ -176,7 +179,7 @@ class Post_Service {
     function get_post_by_id($id) {
         $post_data = $this->repository->get_post_by_id($id);
         extract($post_data);
-        return new Post($id, $user_id, $body, $display_name, $user_handle, $comment_count, $image_url);
+        return new Post($id, $user_id, $body, $display_name, $user_handle, $comment_count, $like_count, $image_url);
     }
     
     /**
@@ -199,6 +202,23 @@ class Post_Service {
         $comment = new Comment($comment_id, $current_post->id, $commenting_user_id, $comment_body);
         $this->repository->add_comment($comment->to_array());
     }
+
+    /**
+     * @param Post $current_post - the Post
+     */
+    function increment_like_count($current_post) {
+       $current_post->increment_like_count();
+       $this->repository->increment_like_count($current_post->to_array());
+    }
+
+    /**
+     * @param Post $current_post - the Post
+     */
+    function decrement_like_count($current_post) {
+        $current_post->decrement_like_count();
+        $this->repository->decrement_like_count($current_post->to_array());
+     }
+     
     
 }
 

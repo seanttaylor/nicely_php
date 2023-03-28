@@ -9,9 +9,9 @@ class Update_Like_Template {
     static function render($template_vars, $current_post_liked_by_user) {
         extract($template_vars);
 
-        $like_icon = $current_post_liked_by_user ? "<i data-post-id='$id' class='heart outline like icon'></i>" : "<i data-post-id='$id' class='heart like icon'></i>";
+        $like_icon = $current_post_liked_by_user ? "<i data-post-id='$id' class='heart like icon' data-current-user-liked></i>" : "<i data-post-id='$id' class='heart outline like icon'></i>";
 
-        return "<span class='right floated'>" . $like_icon . "
+        return "<span class='right floated like-container'>" . $like_icon . "
             <span data-like-count>
                 $like_count likes 
             </span> 

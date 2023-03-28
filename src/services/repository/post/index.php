@@ -47,7 +47,7 @@ class Post_Repository {
         }
     }
 
-     /**
+    /**
      * Adds a comment to a specified Post
      * @param Array $comment - a Comment on a Post
      * 
@@ -64,6 +64,40 @@ class Post_Repository {
             $this->client->query($increment_comment_sql);
         } catch(Exception $e) {
             echo "There was an error getting posts";
+        }
+    }
+
+    /**
+     * Adds a like to a specified Post
+     * @param Array $post a Post
+     * 
+     */
+    function increment_like_count($post) {
+        extract($post);
+
+        $increment_like_count_sql = "UPDATE posts SET like_count = like_count + 1 WHERE id = '$id';";
+
+        try {
+            $this->client->query($increment_like_count_sql);
+        } catch(Exception $e) {
+            echo "There was an error incrementing post like count";
+        }
+    }
+
+     /**
+     * Removes a like from a specified Post
+     * @param Array $post a Post
+     * 
+     */
+    function decrement_like_count($post) {
+        extract($post);
+
+        $decrement_like_count_sql = "UPDATE posts SET like_count = like_count - 1 WHERE id = '$id';";
+
+        try {
+            $this->client->query($decrement_like_count_sql);
+        } catch(Exception $e) {
+            echo "There was an error decrementing post like count";
         }
     }
 

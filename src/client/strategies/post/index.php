@@ -3,6 +3,7 @@
 
 require __DIR__ . "/templates/create-post.php";
 require __DIR__ . "/templates/add-comment.php";
+require __DIR__ . "/templates/update-like-count.php";
 
 /**
  * Defines a strategy for the Post_Client to use for processing incoming form data
@@ -82,17 +83,22 @@ class Update_Like extends Strategy {
      * @return String a JSON formatted string
      */
     function process_form_data($form_data) {
-        if ($form_data["rel"] === "like-post") {
-            $user = $this->user_service->get_user_by_id($form_data["user-id"]);
-            $current_post = $this->post_service->get_post_by_id($form_data["post-id"]);
-        
+        $user = $this->user_service->get_user_by_id($form_data["user-id"]);
+        $current_post = $this->post_service->get_post_by_id($form_data["post-id"]);
+        $current_post_liked_by_user = NULL;
+    
+        if ($form_data["rel"] === "like-post") {       
             $this->post_service->increment_like_count($current_post, $user);
-            $updated_post = $this->post_service->get_post_by_id($form_data["post-id"]);
             $current_post_liked_by_user = TRUE;
-
-            return Update_Like_Template::render($updated_post->to_array(), $current_post_liked_by_user);
         }
-               
+
+        if ($form_data["rel"] === "unlike-post") {       
+            $this->post_service->decrement_like_count($current_post, $user);
+            $current_post_liked_by_user = FALSE;
+        }
+        
+        $updated_post = $this->post_service->get_post_by_id($form_data["post-id"]);
+        return Update_Like_Template::render($updated_post->to_array(), $current_post_liked_by_user);   
     } 
 }
 
