@@ -172,6 +172,14 @@ class Post_Service {
     function get_all_posts() {
         return $this->repository->get_all_posts();
     }
+
+    /**
+     * Fetches list of ids of Posts liked by a specified user
+     * @param String $user_id
+     */
+    function get_liked_posts_by_user_id($user_id) {
+        return $this->repository->get_liked_posts_by_user_id($user_id);
+    }
     
     /**
      * @param String $id - uuid of the post to fetch
@@ -205,10 +213,12 @@ class Post_Service {
 
     /**
      * @param Post $current_post - the Post
+     * @param User $liking_user - the user who liked the Post
      */
-    function increment_like_count($current_post) {
+    function increment_like_count($like_id, $current_post, $liking_user) {
+       $like_id = uuid();
        $current_post->increment_like_count();
-       $this->repository->increment_like_count($current_post->to_array());
+       $this->repository->increment_like_count($like_id, $current_post->to_array(), $liking_user->to_array());
     }
 
     /**
@@ -217,7 +227,7 @@ class Post_Service {
     function decrement_like_count($current_post) {
         $current_post->decrement_like_count();
         $this->repository->decrement_like_count($current_post->to_array());
-     }
+    }
      
     
 }

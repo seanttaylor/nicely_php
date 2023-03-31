@@ -48,6 +48,27 @@ class Post_Repository {
     }
 
     /**
+     * Fetches a list of Post ids a specified user has liked
+     * @param String $user_id
+     * @return Array
+     */
+    function get_liked_posts_by_user_id($user_id) {
+        $get_liked_posts_sql = "SELECT * FROM liked_posts WHERE user_id = '$user_id'";
+        $liked_posts = array();
+
+        try {
+            $query_result = $this->client->query($get_liked_posts_sql);
+            while ($row = $query_result->fetchArray(SQLITE3_ASSOC)) {
+                $liked_posts[] = $row;
+            }
+            return $liked_posts;
+
+        } catch(Exception $e) {
+            echo "There was an error getting liked posts";
+        }
+    }
+
+    /**
      * Adds a comment to a specified Post
      * @param Array $comment - a Comment on a Post
      * 
@@ -69,16 +90,23 @@ class Post_Repository {
 
     /**
      * Adds a like to a specified Post
+     * @param String $like_id uuid for the like
      * @param Array $post a Post
+     * @param Array $liking_user a User
      * 
      */
-    function increment_like_count($post) {
+    function increment_like_count($like_id, $post, $liking_user) {
         extract($post);
 
+        $liking_user_id = $liking_user['id'];
+        $like_created_date = date('Y-m-d\TH:i:s');
+
         $increment_like_count_sql = "UPDATE posts SET like_count = like_count + 1 WHERE id = '$id';";
+        $create_post_like_sql = "INSERT INTO liked_posts (id, user_id, post_id, created_date) VALUES('$like_id', '$liking_user_id', '$id', '$like_created_date');";
 
         try {
             $this->client->query($increment_like_count_sql);
+            $this->client->query($create_post_like_sql);
         } catch(Exception $e) {
             echo "There was an error incrementing post like count";
         }

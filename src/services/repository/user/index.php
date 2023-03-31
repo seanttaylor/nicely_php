@@ -13,7 +13,7 @@ class User_Repository {
     /**
      * Fetches a specified User from the database
      * @param String $id - uuid for a User
-     * @return User
+     * @return Array
      */
     function get_user_by_id($id) {
         $get_user_sql = "SELECT * FROM users WHERE id = '$id'";

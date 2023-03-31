@@ -56,6 +56,16 @@ CREATE TABLE IF NOT EXISTS comments(
 );
 EOF;
 
+const CREATE_LIKED_POSTS_TABLE_SQL = <<<EOF
+CREATE TABLE IF NOT EXISTS liked_posts(
+  id varchar(64) PRIMARY KEY NOT NULL,
+  user_id varchar(64) NOT NULL REFERENCES users,
+  post_id varchar(64) NOT NULL references posts,
+  created_date text NOT NULL
+);
+EOF;
+
+
 
 /******** MAIN ********/
 
@@ -63,6 +73,8 @@ $sql_config = new SQL_Configuration();
 $sql_config->add_SQL(CREATE_POSTS_TABLE_SQL);
 $sql_config->add_SQL(CREATE_USERS_TABLE_SQL);
 $sql_config->add_SQL(CREATE_COMMENTS_TABLE_SQL);
+$sql_config->add_SQL(CREATE_LIKED_POSTS_TABLE_SQL);
+
 
 /**
  * Used to house SQL statements for seeding the database

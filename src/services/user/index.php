@@ -136,10 +136,13 @@ class User_Service {
 
     /**
      * @param String $id - uuid of the post to fetch
-     * @return Array
+     * @return User
      */
     function get_user_by_id($id) {
-        return $this->repository->get_user_by_id($id);
+        $user_data = $this->repository->get_user_by_id($id);
+        extract($user_data);
+
+        return new User($id, $email, $display_name, $handle, $motto);
     }
     
 }

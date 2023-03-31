@@ -78,7 +78,7 @@ $post_service = new Post_Service($post_repository);
 	<div id="user-post-list" class="column">
 		<?php 
 			$post_list = array_reverse($post_service->get_all_posts());
-			// $comment_list = array_reverse($post_service->get_comments_by_user($user);
+			$liked_post_list = $post_service->get_liked_posts_by_user_id("cebca450-45ec-4f2e-9202-2e6a132ba2fe");
 
 			foreach($post_list as $post) {
 				list(
