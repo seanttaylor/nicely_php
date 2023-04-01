@@ -36,7 +36,7 @@ class Create_Post extends Strategy {
      */
     function process_form_data($form_data) {
         $post_body = $form_data["post-body"];
-        $current_user = $this->user_service->get_user_by_id($form_data["user-id"]);
+        $current_user = $this->user_service->get_user_by_id($form_data["user-id"])->to_array();
         $new_post = $this->post_service->create_post(
             $current_user["id"], 
             $current_user["handle"], 
@@ -61,7 +61,7 @@ class Add_Comment extends Strategy {
      */
     function process_form_data($form_data) {
         $comment_body = $form_data["comment-body"];
-        $commenting_user = $this->user_service->get_user_by_id($form_data["commenter-id"]);
+        $commenting_user = $this->user_service->get_user_by_id($form_data["commenter-id"])->to_array();
         $current_post = $this->post_service->get_post_by_id($form_data["post-id"]);
         
         $this->post_service->add_comment($current_post, $commenting_user["id"], $comment_body);

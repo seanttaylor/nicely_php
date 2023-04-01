@@ -2,6 +2,7 @@
 /******** IMPORTS ********/
 
 require "comment.php";
+require "like.php";
 require __DIR__ . "../../../utils/uuid.php";
 
 class Post {
@@ -178,7 +179,15 @@ class Post_Service {
      * @param String $user_id
      */
     function get_liked_posts_by_user_id($user_id) {
-        return $this->repository->get_liked_posts_by_user_id($user_id);
+        $like_list = $this->repository->get_liked_posts_by_user_id($user_id);
+        $result = array();
+
+        foreach ($like_list as $unique_like) {
+            extract($unique_like);
+            $result[$post_id] = new Like($id, $user_id, $post_id, $created_date);
+        }
+
+        return $result;
     }
     
     /**
@@ -215,7 +224,7 @@ class Post_Service {
      * @param Post $current_post - the Post
      * @param User $liking_user - the user who liked the Post
      */
-    function increment_like_count($like_id, $current_post, $liking_user) {
+    function increment_like_count($current_post, $liking_user) {
        $like_id = uuid();
        $current_post->increment_like_count();
        $this->repository->increment_like_count($like_id, $current_post->to_array(), $liking_user->to_array());

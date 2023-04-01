@@ -112,12 +112,18 @@ $post_service = new Post_Service($post_repository);
 				echo "<div class='content'>
 					<a class='header' data-user-display-name='$display_name'>$display_name</a>
 					<div class='description'>$post_body</div>
-				</div>
+				</div>";
 
-				<div class='content' data-post-stats='$id'>
-					<span class='right floated like-container'>
-						<i data-post-id='$id' class='heart outline like icon'></i>
-						<span data-like-count>
+				echo "<div class='content' data-post-stats='$id'>
+					<span class='right floated like-container'>";
+				
+					if (array_key_exists($id, $liked_post_list)) {
+						echo "<i data-post-id='$id' class='heart like icon' data-current-user-liked></i>";
+					} else {
+						echo "<i data-post-id='$id' class='heart outline like icon'></i>";
+					}	
+
+					echo "<span data-like-count>
 							$like_count likes 
 						</span> 
 					</span>

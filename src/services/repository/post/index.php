@@ -124,6 +124,7 @@ class Post_Repository {
 
         try {
             $this->client->query($decrement_like_count_sql);
+            // execute SQL to remove the unique like associated with this post in the `liked_posts` table
         } catch(Exception $e) {
             echo "There was an error decrementing post like count";
         }
