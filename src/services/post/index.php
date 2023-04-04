@@ -175,8 +175,19 @@ class Post_Service {
     }
 
     /**
+     * Fetches all Posts by a specified user
+     * @param String $user_id
+     * @return Array
+     */
+    function get_posts_by_user_id($user_id) {
+        return $this->repository->get_posts_by_user_id($user_id);
+    }
+
+
+    /**
      * Fetches list of ids of Posts liked by a specified user
      * @param String $user_id
+     * @return Array
      */
     function get_liked_posts_by_user_id($user_id) {
         $like_list = $this->repository->get_liked_posts_by_user_id($user_id);
@@ -232,10 +243,11 @@ class Post_Service {
 
     /**
      * @param Post $current_post - the Post
+     * @param User $liking_user - the user unliking the Post
      */
-    function decrement_like_count($current_post) {
+    function decrement_like_count($current_post, $liking_user) {
         $current_post->decrement_like_count();
-        $this->repository->decrement_like_count($current_post->to_array());
+        $this->repository->decrement_like_count($current_post->to_array(), $liking_user->to_array());
     }
      
     

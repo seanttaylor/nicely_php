@@ -1,8 +1,10 @@
 <?php
 /******** IMPORTS ********/
 
+require "./src/services/feed/index.php";
 require "./src/services/post/index.php";
 require "./src/services/repository/post/index.php";
+
 require "./src/services/database/sqlite/index.php";
 require "./src/services/database/sqlite/seed-sql.php";
 
@@ -18,6 +20,7 @@ $sqlite_client->seed_database($seed_sql);
 
 $post_repository = new Post_Repository($sqlite_client);
 $post_service = new Post_Service($post_repository);
+$feed_service = new Feed_Service($post_service, $user_service);
 
 ?>
 
@@ -77,8 +80,11 @@ $post_service = new Post_Service($post_repository);
 	<div class="column"></div>
 	<div id="user-post-list" class="column">
 		<?php 
+		    $feed_item_list = $feed_service->get_feed_by_user_id("cebca450-45ec-4f2e-9202-2e6a132ba2fe");
 			$post_list = array_reverse($post_service->get_all_posts());
 			$liked_post_list = $post_service->get_liked_posts_by_user_id("cebca450-45ec-4f2e-9202-2e6a132ba2fe");
+			
+			print_r($feed_item_list);
 
 			foreach($post_list as $post) {
 				list(

@@ -48,6 +48,27 @@ class Post_Repository {
     }
 
     /**
+     * Fetches all posts from the database
+     * @param String $user_id
+     * @return Array
+     */
+    function get_posts_by_user_id($user_id) {
+        $get_user_posts_sql = "SELECT * FROM posts WHERE user_id = '$user_id'";
+        $posts = array();
+
+        try {
+            $query_result = $this->client->query($get_user_posts_sql);
+            while ($row = $query_result->fetchArray(SQLITE3_ASSOC)) {
+                $posts[] = $row;
+            }
+            return $posts;
+
+        } catch(Exception $e) {
+            echo "There was an error getting user posts";
+        }
+    }
+
+    /**
      * Fetches a list of Post ids a specified user has liked
      * @param String $user_id
      * @return Array
@@ -115,16 +136,19 @@ class Post_Repository {
      /**
      * Removes a like from a specified Post
      * @param Array $post a Post
+     * @param Array $liking_user
      * 
      */
-    function decrement_like_count($post) {
+    function decrement_like_count($post, $liking_user) {
         extract($post);
 
+        $liking_user_id = $liking_user['id'];
         $decrement_like_count_sql = "UPDATE posts SET like_count = like_count - 1 WHERE id = '$id';";
+        $remove_post_like_sql = "DELETE FROM liked_posts WHERE user_id = '$liking_user_id'";
 
         try {
             $this->client->query($decrement_like_count_sql);
-            // execute SQL to remove the unique like associated with this post in the `liked_posts` table
+            $this->client->query($remove_post_like_sql);
         } catch(Exception $e) {
             echo "There was an error decrementing post like count";
         }
