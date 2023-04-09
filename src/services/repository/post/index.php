@@ -69,6 +69,27 @@ class Post_Repository {
     }
 
     /**
+     * Fetches all posts from the database with additional metadata for rendering feeds
+     * @param String $user_id
+     * @return Array
+     */
+    function get_feed_posts($user_id) {
+        $get_feed_posts_sql = "SELECT lp.post_id, posts.*, CAST(lp.user_id = '$user_id' AS BOOLEAN) AS user_has_liked FROM liked_posts AS lp JOIN posts on lp.post_id = posts.id;";
+        $feed_posts = array();
+
+        try {
+            $query_result = $this->client->query($get_feed_posts_sql);
+            while ($row = $query_result->fetchArray(SQLITE3_ASSOC)) {
+                $feed_posts[] = $row;
+            }
+            return $feed_posts;
+
+        } catch(Exception $e) {
+            echo "There was an error getting user posts";
+        }
+    }
+
+    /**
      * Fetches a list of Post ids a specified user has liked
      * @param String $user_id
      * @return Array

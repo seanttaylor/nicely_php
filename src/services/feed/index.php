@@ -4,13 +4,31 @@
         public $data;
         public $user_has_liked;
 
-
         /**
          * 
          */
         function __construct($post, $user_has_liked=FALSE) {
             $this->data = $post;
             $this->user_has_liked = $user_has_liked;
+        }
+
+        /**
+         * 
+         */
+        function to_array() {
+            return array(
+                "id" => $this->data['id'],
+                "user_id" => $this->data['user_id'],
+                "user_handle" => $this->data['user_handle'], 
+                "display_name" => $this->data['display_name'],
+                "created_date" => $this->data['reated_date'], 
+                "body" => $this->data['body'],
+                "has_image" =>$this->data['has_image'],
+                "image_url" => $this->data['image_url'],
+                "comment_count" => $this->data['comment_count'],
+                "like_count" => $this->data['like_count'],
+                "user_has_liked" => $this->user_has_liked
+            );
         }
     }
 
@@ -31,17 +49,16 @@
          * @param Array
          */
         function get_feed_by_user_id($user_id) {
-            $user_post_list = $this->post_service->get_posts_by_user_id($user_id);
-            $user_liked_posts_list = array_keys($this->post_service->get_liked_posts_by_user_id($user_id));
+            $feed_post_list = $this->post_service->get_feed_posts($user_id);
             $feed_items = array();
 
-            print_r($user_liked_posts_list);
-            
-            foreach($user_post_list as $post) {
-                if (array_key_exists($post['id'], $user_liked_posts_list)) {
-                    $feed_items[$post['id']] = new Feed_Item($post, TRUE); 
+            foreach($feed_post_list as $post) {
+                if ($post['user_has_liked']) {
+                    $item = new Feed_Item($post, TRUE);
+                    $feed_items[$post['id']] = $item->to_array();
                 } else {
-                    $feed_items[$post['id']] = new Feed_Item($post);
+                    $item = new Feed_Item($post);
+                    $feed_items[$post['id']] = $item->to_array();
                 }
             }
 

@@ -80,13 +80,15 @@ $feed_service = new Feed_Service($post_service, $user_service);
 	<div class="column"></div>
 	<div id="user-post-list" class="column">
 		<?php 
-		    $feed_item_list = $feed_service->get_feed_by_user_id("cebca450-45ec-4f2e-9202-2e6a132ba2fe");
-			$post_list = array_reverse($post_service->get_all_posts());
-			$liked_post_list = $post_service->get_liked_posts_by_user_id("cebca450-45ec-4f2e-9202-2e6a132ba2fe");
+		 	$feed_item_list = $feed_service->get_feed_by_user_id("cebca450-45ec-4f2e-9202-2e6a132ba2fe");
+		    //$feed_item_list = $feed_service->get_feed_by_user_id("cebca450-45ec-4f2e-9202-2e6a132ba2fe");
+			//$post_list = array_reverse($post_service->get_all_posts());
+			//$liked_post_list = $post_service->get_liked_posts_by_user_id("cebca450-45ec-4f2e-9202-2e6a132ba2fe");
 			
-			print_r($feed_item_list);
+			//print_r($feed_item_list);
 
-			foreach($post_list as $post) {
+			foreach($feed_item_list as $post) {
+				
 				list(
 					"id" => $id,
 					"user_id" => $user_id,
@@ -97,7 +99,8 @@ $feed_service = new Feed_Service($post_service, $user_service);
 					"body" => $post_body, 
 					"comment_count" => $comment_count,
 					"like_count" => $like_count,
-					"created_date" => $created_date
+					"created_date" => $created_date,
+					"user_has_liked" => $user_has_liked
 				) = $post;
 
 				echo "<div class='ui card centered'>
@@ -123,7 +126,7 @@ $feed_service = new Feed_Service($post_service, $user_service);
 				echo "<div class='content' data-post-stats='$id'>
 					<span class='right floated like-container'>";
 				
-					if (array_key_exists($id, $liked_post_list)) {
+					if ($user_has_liked) {
 						echo "<i data-post-id='$id' class='heart like icon' data-current-user-liked></i>";
 					} else {
 						echo "<i data-post-id='$id' class='heart outline like icon'></i>";

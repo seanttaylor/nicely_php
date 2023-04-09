@@ -183,6 +183,15 @@ class Post_Service {
         return $this->repository->get_posts_by_user_id($user_id);
     }
 
+    /**
+     * Fetches all Posts by a specified user
+     * @param String $user_id
+     * @return Array
+     */
+    function get_feed_posts($user_id) {
+        return $this->repository->get_feed_posts($user_id);
+    }
+
 
     /**
      * Fetches list of ids of Posts liked by a specified user
